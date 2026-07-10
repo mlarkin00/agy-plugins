@@ -57,7 +57,7 @@ def main():
 
     if trigger_push:
         print("TRIGGER PUSH")
-        subprocess.run(["/google/bin/releases/jetski-devs/tools/cli", "agents", "run", "memory-pusher-jetski"])
+        subprocess.run(["/google/bin/releases/jetski-devs/tools/cli", "agents", "run", "memory-pusher"])
 
 if __name__ == "__main__":
     main()

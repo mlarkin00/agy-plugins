@@ -15,7 +15,7 @@ fi
 
 # Run verify to ensure health (including hooks symlink)
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-bash "$SCRIPT_DIR/verify-memory-jetski.sh"
+bash "$SCRIPT_DIR/verify-memory.sh"
 
 TIMESTAMP_FILE="$HOME/.gemini/jetski/.memory-pull-timestamp"
 mkdir -p "$(dirname "$TIMESTAMP_FILE")"

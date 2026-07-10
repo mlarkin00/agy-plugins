@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Health check for the Jetski agent memory system.
-# Tier 2 checks detect structural failures and prompt the user to run bootstrap-memory-jetski.
+# Tier 2 checks detect structural failures and prompt the user to run bootstrap-memory.
 # Tier 1 checks auto-fix minor drift (broken symlink, missing GEMINI.md) silently.
 # Outputs nothing on a healthy system.
 
@@ -11,19 +11,19 @@ TIER2=0
 # ── Tier 2 checks — structural failures; prompt bootstrap ─────────────────────
 
 if [[ ! -d "$REPO" ]]; then
-  echo "[verify-memory-jetski] ⚠ Repo not found at $REPO. Run the bootstrap-memory-jetski agent to set up." >&2
+  echo "[verify-memory] ⚠ Repo not found at $REPO. Run the bootstrap-memory agent to set up." >&2
   TIER2=1
 fi
 
 if [[ "$TIER2" -eq 0 && ! -d "$REPO/.git" ]]; then
-  echo "[verify-memory-jetski] ⚠ $REPO is not a git repo. Run the bootstrap-memory-jetski agent to restore." >&2
+  echo "[verify-memory] ⚠ $REPO is not a git repo. Run the bootstrap-memory agent to restore." >&2
   TIER2=1
 fi
 
 if [[ "$TIER2" -eq 0 ]]; then
   REMOTE=$(git -C "$REPO" remote get-url origin 2>/dev/null || echo "")
   if [[ "$REMOTE" != *"agent-memory"* ]]; then
-    echo "[verify-memory-jetski] ⚠ Remote '$REMOTE' does not match expected repo. Run the bootstrap-memory-jetski agent to restore." >&2
+    echo "[verify-memory] ⚠ Remote '$REMOTE' does not match expected repo. Run the bootstrap-memory agent to restore." >&2
     TIER2=1
   fi
 fi
@@ -42,7 +42,7 @@ HOOKS_SYMLINK="$HOME/.gemini/jetski/hooks.json"
 HOOKS_TARGET="$PLUGIN_ROOT/hooks.json"
 
 if [[ -e "$HOOKS_SYMLINK" && ! -L "$HOOKS_SYMLINK" ]]; then
-  echo "[verify-memory-jetski] ⚠ $HOOKS_SYMLINK exists and is not a symlink. Skipping." >&2
+  echo "[verify-memory] ⚠ $HOOKS_SYMLINK exists and is not a symlink. Skipping." >&2
 else
   mkdir -p "$HOME/.gemini/jetski"
   ln -sfn "$HOOKS_TARGET" "$HOOKS_SYMLINK"
@@ -50,7 +50,7 @@ fi
 
 # Symlink missing or broken
 if [[ -e "$SYMLINK" && ! -L "$SYMLINK" ]]; then
-  echo "[verify-memory-jetski] ⚠ $SYMLINK exists and is not a symlink. Skipping." >&2
+  echo "[verify-memory] ⚠ $SYMLINK exists and is not a symlink. Skipping." >&2
 else
   ln -sfn "$REPO/GEMINI.md" "$SYMLINK"
 fi

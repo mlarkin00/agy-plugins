@@ -1,5 +1,5 @@
 ---
-name: add-memory-jetski
+name: add-memory
 description: Use when the user says "remember that …", "save this to memory", "add to long-term memory", or otherwise explicitly asks for information to be persisted across sessions. Saves the memory immediately to the global GEMINI.md file.
 ---
 

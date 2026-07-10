@@ -3,7 +3,7 @@ A Jetski plugin for agent memory management, consisting of skills, subagents, an
 
 # Operational Commands
 ## Verification
-bash scripts/verify-memory-jetski.sh
+bash scripts/verify-memory.sh
 
 # Style & Conventions
 - No specific style preferences defined beyond standard language conventions.

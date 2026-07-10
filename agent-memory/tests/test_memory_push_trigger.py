@@ -28,7 +28,7 @@ class TestMemoryPushTrigger(unittest.TestCase):
         from scripts.memory_push_trigger import main
         main()
         
-        mock_run.assert_called_once_with(["jetski", "agents", "run", "memory-pusher-jetski"])
+        mock_run.assert_called_once_with(["/google/bin/releases/jetski-devs/tools/cli", "agents", "run", "memory-pusher"])
         mock_exit.assert_not_called()
         
     @patch('scripts.memory_push_trigger.subprocess.run')

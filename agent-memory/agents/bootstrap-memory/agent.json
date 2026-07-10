@@ -1,0 +1,1 @@
+{"name":"bootstrap-memory", "description":"Use when the user asks to set up or restore the agent memory system for Jetski. Handles full provisioning: repo clone, memory symlink, and memory migration.", "disabled":true, "configPath":{"configPathUri":"file:///usr/local/google/home/matthewlarkin/.gemini/config/plugins/agent-memory/agents/bootstrap-memory/config.yaml"}}

@@ -75,7 +75,7 @@ custom_agent:
         ## Step 7: Run verify to confirm
         
         ```bash
-        bash ./scripts/verify-memory-jetski.sh
+        bash ./scripts/verify-memory.sh
         ```
         
         ## Final summary

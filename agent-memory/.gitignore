@@ -1,2 +1,6 @@
 .claude/settings.local.json
 .worktrees/
+
+# Python cache
+__pycache__/
+*.pyc
