@@ -1,0 +1,84 @@
+# active-skills
+
+Installs the full set of agent skills from the [`mlarkin00/agent-skills`](https://github.com/mlarkin00/agent-skills) repository (the `active-skills/` directory) as a single Claude Code plugin.
+
+The skills are **vendored** — a copy lives under [`skills/`](./skills) in this plugin — because a marketplace plugin must physically contain the skills it ships. That copy is kept current automatically (see [Auto-sync](#auto-sync) below), so you never edit `skills/` by hand.
+
+## Install
+
+From the `mlarkin00-claude` marketplace:
+
+```
+/plugin marketplace add mlarkin00/claude
+/plugin install active-skills@mlarkin00-claude
+```
+
+Once installed, every skill is available and namespaced under this plugin, e.g. `active-skills:systematic-debugging`.
+
+## Auto-sync
+
+The vendored skills track the source repo automatically. Two workflows cooperate:
+
+1. **`notify-plugin.yml`** (lives in `mlarkin00/agent-skills`) — on any push that touches `active-skills/**`, it sends a [`repository_dispatch`](https://docs.github.com/actions/reference/events-that-trigger-workflows#repository_dispatch) event (`event_type: active-skills-updated`) to this repo. This gives near-instant updates. A reference copy of this workflow is kept at [`sync/notify-plugin.yml`](./sync/notify-plugin.yml).
+2. **`sync-active-skills.yml`** (lives in `mlarkin00/claude`, this repo) — on that dispatch (and also on a **daily schedule** and via **manual run** as fallbacks), it clones the source repo, mirrors `active-skills/` into `active-skills/skills/` (adds, updates, **and deletes** to match exactly), regenerates this README's skill list, and — if anything changed — bumps the plugin version, updates `marketplace.json`, commits, tags, and cuts a GitHub release.
+
+So adding, deleting, or editing a skill in the source repo results in a new plugin release with the vendored `skills/` in lockstep.
+
+### One-time setup for instant (event-driven) updates
+
+The scheduled poll and manual run need **no setup**. For the instant `repository_dispatch` path, add a token to the *source* repo so it can dispatch to this one:
+
+1. Create a fine-grained or classic PAT with **`repo`** scope (or fine-grained `contents: read` + `metadata: read`, plus the ability to dispatch) on `mlarkin00/claude`.
+2. In `mlarkin00/agent-skills`, add it as an Actions secret named **`CLAUDE_REPO_TOKEN`**.
+3. Ensure `sync/notify-plugin.yml` is installed at `.github/workflows/notify-plugin.yml` in `mlarkin00/agent-skills`.
+
+If the token is missing or expires, the daily poll still keeps the plugin current.
+
+## Skills
+
+Source: [`mlarkin00/agent-skills`](https://github.com/mlarkin00/agent-skills) → `active-skills/`.
+
+<!-- SKILLS:START -->
+**40 skills** (auto-generated — do not edit by hand):
+
+- **`auto-mode`** — Use when the user invokes `/auto <task>` or says "run autonomously", "do it end-to-end", "no prompts", "auto mode". Plan-driven autonomous execution — agent writes a full plan, batches all clarifying questions up front, then executes phase-by-phase without further prompting. Tests after every phase. Records summary + learnings back into the plan doc.
+- **`brainstorming`** — You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation.
+- **`close-session`** — Use at the end of any work session to update project documentation, commit changes, and push safely to GitHub. Use when the user says "close session", "wrap up", "end session", "done for now", "save my work", "commit and push", or when finishing a block of work with no further tasks planned. Use this skill even if the session produced only docs changes or only minor fixes — every session deserves a clean close.
+- **`cloud-build-triggers`** — Use when creating, updating, or managing Google Cloud Build triggers. This skill handles 1st Gen and 2nd Gen GitHub connections, branch patterns, and mandatory IAM validation.
+- **`code-design`** — Use when starting new feature work, building a new system or module, or when the user asks how something should be designed or architected. Triggers on phrases like 'design this', 'how should we build', 'plan the architecture', 'think through the approach', 'write a design doc', 'what's the right way to implement', or any request that involves deciding *how* something should work before writing code. Also use when the user provides requirements or a spec and expects a structured design rather than jumping straight to implementation. This skill MUST be used before implementation begins on any non-trivial feature — if the work touches more than one file or introduces a new abstraction, design first.
+- **`db-migration`** — Use this skill when the user needs to manage database schema changes, perform migrations, rollback changes, or verify database state. Trigger on phrases like "migrate the database", "create a new migration", "rollback schema changes", "apply migrations", or when working with tools like Flyway, Liquibase, Alembic, or Django migrations. Ensure to use this skill whenever database schema evolution is mentioned.
+- **`dispatching-parallel-agents`** — Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies
+- **`documentation-lookup`** — Use up-to-date library and framework docs via Context7 MCP instead of training data. Activates for setup questions, API references, code examples, or when the user names a framework (e.g. React, Next.js, Prisma).
+- **`executing-plans`** — Use when you have a written implementation plan to execute in a separate session with review checkpoints
+- **`explanatory-mode`** — Use this skill ONLY when the user explicitly asks to "explain" something or provides an instruction to write or document something in an "explanatory way". It is essential for providing deep technical insights and instructional breakdowns.
+- **`finding-skills`** — Use this skill when you need to discover and install agent skills from the open ecosystem. Trigger this skill when the user asks "how do I do X", "find a skill for X", or expresses interest in extending agent capabilities.
+- **`finishing-a-development-branch`** — Use when implementation is complete, all tests pass, and you need to decide how to integrate the work - guides completion of development work by presenting structured options for merge, PR, or cleanup
+- **`frontend-design`** — Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, or applications. Generates creative, polished code that avoids generic AI aesthetics.
+- **`gcloud`** — Use this skill when interacting with Google Cloud services using the gcloud CLI. Use when managing cloud resources, querying configurations, or troubleshooting issues via gcloud.
+- **`gcp-mcp-setup`** — Use when connecting Claude Code to a Google Cloud / googleapis MCP server (e.g. developerknowledge.googleapis.com, or any *.googleapis.com/mcp or Google Cloud remote MCP endpoint) and wiring up its authentication. Make sure to use this skill whenever the user wants to add, configure, scope (global/user vs project), or debug a GCP / Google MCP server in Claude Code, mentions a googleapis.com MCP URL, hits 401/403 or "missing authentication credential" / "quota project" / "API not enabled" / "dynamic client registration" errors from a Google MCP endpoint, or asks how to keep a gcloud-authenticated MCP server's token from expiring. Covers the bearer-token + x-goog-user-project pattern, enabling the backing API, and Claude Code's headersHelper for auto-refreshing tokens.
+- **`gemini-agents-api`** — Manages custom Agent resources on Gemini Enterprise Agent Platform. Use when the user wants to programmatically create, configure, list, update, or delete stateful, server-managed Agent resources (including mounting files, skills, and tools) before executing conversations.
+- **`gemini-interactions-api`** — Guides the usage of Gemini Interactions API on Gemini Enterprise Agent Platform. Use when the user wants to use the stateful, server-managed Interactions API for multi-turn conversations, background execution, streaming, structured output, and function calling on the Agent Platform.
+- **`git-sync`** — Use this skill when the user asks to sync, update, pull, push, fetch, merge, or rebase the codebase with the remote GitHub repository, or when they run the slash command /git-sync with optional parameters (e.g., "/git-sync", "/git-sync prefer remote", "/git-sync prefer local"). This skill handles git merge or rebase operations safely, ensuring local changes are preserved and prompting the user only if there are irreconcilable merge conflicts, or automatically resolving conflicts if a preference (local/remote) is specified. Make sure to use this skill whenever the user mentions git, remote, syncing, pushing, pulling, or keeping the workspace up to date.
+- **`google-antigravity-sdk`** — Design, implement, and debug autonomous AI agents and multi-agent systems using the Google Antigravity (AGY) SDK. ACTIVATE this skill when the user wants to create, configure, or orchestrate Google Antigravity agents.
+- **`google-cloud-recipe-auth`** — Provides expert guidance on authenticating and authorizing to Google Cloud services and APIs, covering human users, service identities, Application Default Credentials (ADC), and best practices for secure access.
+- **`grill-me`** — A relentless interview to sharpen a plan or design.
+- **`grilling`** — Grill the user relentlessly about a plan or design. Use when the user wants to stress-test a plan before building, or uses any 'grill' trigger phrases.
+- **`guidelines`** — Behavioral guidelines to reduce common LLM coding mistakes. Use when writing, reviewing, or refactoring code to avoid overcomplication, make surgical changes, surface assumptions, and define verifiable success criteria.
+- **`handoff`** — Compact the current conversation into a handoff document for another agent to pick up.
+- **`managing-agent-instructions`** — Use when the user asks to "write a doc", "create agent instructions", "update AGENTS.md", "sync context files", "refine project rules", "update the TODO", "add a task to the backlog", or "update DESIGN.md". Use this skill to manage persistent, high-signal project-specific context in AGENTS.md, GEMINI.md, CLAUDE.md, the project task backlog in .agents/TODO.md, and the design system specification in DESIGN.md.
+- **`new-prompt`** — Pre-processes raw user input through the designing-prompts framework before execution. Trigger when user invokes /new-prompt "<task>" or says "refine this prompt then run it". Takes raw intent, applies context engineering to produce a deterministic prompt, then executes it as the main task.
+- **`optimizing-prompts-w-vertex`** — Use when a user wants to iteratively improve a prompt using Vertex AI Prompt Optimizer with zero-shot optimization and steering hints between iterations.
+- **`project-setup`** — Use this skill whenever the current directory lacks an `AGENTS.md` file, a `.git` repository, or other standard project descriptors, indicating it may be a new or unconfigured project. This skill MUST trigger when the user says "set up a new project," "initialize this folder," "start a new repo," or whenever an agent session begins in a directory that doesn't have a clear project-root defined. Proactively use this skill to establish the current directory as the project-root and coordinate the generation of foundational docs via the `managing-agent-instructions` skill.
+- **`prompt-design`** — Use this skill when you need to design, improve, or iterate on AI prompts and system instructions. This skill transitions from "vibe-based" prompting to deterministic Context Engineering, ensuring prompts are structured for both standard and reasoning models.
+- **`receiving-code-review`** — Use when receiving code review feedback, before implementing suggestions, especially if feedback seems unclear or technically questionable - requires technical rigor and verification, not performative agreement or blind implementation
+- **`refresh-skills`** — Use this skill when the user asks to sync, update, or refresh the local agent-skills repository with its remote tracking branch on GitHub, or when they mention 'refresh skills', 'update agent skills', 'pull latest skills', 'sync agent skills repo with github', or similar commands. This skill looks for the repository at ~/agent-skills, runs the sync using the git-sync helper script with the 'prefer remote' configuration, and guides conflict resolution if any issues arise.
+- **`requesting-code-review`** — Use when completing tasks, implementing major features, or before merging to verify work meets requirements
+- **`skill-creator-enhanced`** — Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, update or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.
+- **`subagent-driven-development`** — Use when executing implementation plans with independent tasks in the current session
+- **`systematic-debugging`** — Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
+- **`test-driven-development`** — Use when implementing any feature or bugfix, before writing implementation code
+- **`using-agent-workflow`** — Use when starting any conversation - establishes how to find and use agent-workflow skills, requiring Skill/activate_skill invocation before ANY response including clarifying questions
+- **`using-git-worktrees`** — Use when starting feature work that needs isolation from current workspace or before executing implementation plans that involve source code changes or feature development - creates isolated git worktrees in the project root (.worktrees/) with safety verification
+- **`verification-before-completion`** — Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always
+- **`writing-plans`** — Use when you have a spec or requirements for a multi-step task, before touching code
+<!-- SKILLS:END -->

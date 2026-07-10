@@ -1,0 +1,18 @@
+{
+  "agent-memory-pull": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "./scripts/memory-pull.sh"
+      }
+    ]
+  },
+  "agent-memory-push": {
+    "PostToolUse": [
+      {
+        "type": "command",
+        "command": "python3 ./scripts/memory_push_trigger.py"
+      }
+    ]
+  }
+}

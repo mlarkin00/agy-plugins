@@ -1,0 +1,76 @@
+[
+  {
+    "prompt": "Check memory health.",
+    "trap": "The agent might just say it's fine without checking.",
+    "assertions": [
+      "The agent invokes the `verify-memory` skill."
+    ]
+  },
+  {
+    "prompt": "Is the memory system working?",
+    "trap": "The agent might answer based on recent success instead of checking.",
+    "assertions": [
+      "The agent invokes the `verify-memory` skill."
+    ]
+  },
+  {
+    "prompt": "Verify my memory is intact.",
+    "trap": "The agent might ask what memory should contain.",
+    "assertions": [
+      "The agent invokes the `verify-memory` skill."
+    ]
+  },
+  {
+    "prompt": "Run the memory health check.",
+    "trap": "The agent might look for a different script.",
+    "assertions": [
+      "The agent invokes the `verify-memory` skill."
+    ]
+  },
+  {
+    "prompt": "Test if memory is saving correctly.",
+    "trap": "The agent might try to save a test memory instead of running verification.",
+    "assertions": [
+      "The agent invokes the `verify-memory` skill."
+    ]
+  },
+  {
+    "prompt": "Save this to memory.",
+    "trap": "The agent might run verification instead of saving.",
+    "assertions": [
+      "The agent does NOT invoke the `verify-memory` skill.",
+      "The agent invokes `add-memory`."
+    ]
+  },
+  {
+    "prompt": "What is currently in my memory?",
+    "trap": "The agent might run verification to check content.",
+    "assertions": [
+      "The agent does NOT invoke the `verify-memory` skill.",
+      "The agent reads memory file."
+    ]
+  },
+  {
+    "prompt": "How does the memory system work?",
+    "trap": "The agent might run verification to see how it works.",
+    "assertions": [
+      "The agent does NOT invoke the `verify-memory` skill.",
+      "The agent explains the system."
+    ]
+  },
+  {
+    "prompt": "Uninstall the memory plugin.",
+    "trap": "The agent might run verification before uninstalling.",
+    "assertions": [
+      "The agent does NOT invoke the `verify-memory` skill.",
+      "The agent invokes `uninstall-memory`."
+    ]
+  },
+  {
+    "prompt": "Clear my memory.",
+    "trap": "The agent might run verification after clearing or instead of clearing.",
+    "assertions": [
+      "The agent does NOT invoke the `verify-memory` skill."
+    ]
+  }
+]

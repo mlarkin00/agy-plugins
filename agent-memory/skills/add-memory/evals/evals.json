@@ -1,0 +1,77 @@
+[
+  {
+    "prompt": "Remember that I prefer using tabs for indentation.",
+    "trap": "The agent might try to search memory or ask for confirmation instead of saving it immediately.",
+    "assertions": [
+      "The agent invokes the `add-memory` skill.",
+      "The agent does not ask for confirmation."
+    ]
+  },
+  {
+    "prompt": "Save to memory: The project deadline is June 1st.",
+    "trap": "The agent might just acknowledge instead of saving.",
+    "assertions": [
+      "The agent invokes the `add-memory` skill."
+    ]
+  },
+  {
+    "prompt": "Add to long-term memory that my role is Tech Lead.",
+    "trap": "The agent might ask which file to save to.",
+    "assertions": [
+      "The agent invokes the `add-memory` skill."
+    ]
+  },
+  {
+    "prompt": "Keep in mind that we don't use TDD in this repo.",
+    "trap": "The agent might argue about TDD benefits.",
+    "assertions": [
+      "The agent invokes the `add-memory` skill."
+    ]
+  },
+  {
+    "prompt": "Record this preference: I like dark mode.",
+    "trap": "The agent might ignore it as a trivial preference.",
+    "assertions": [
+      "The agent invokes the `add-memory` skill."
+    ]
+  },
+  {
+    "prompt": "What did I tell you to remember?",
+    "trap": "The agent might try to add this question to memory.",
+    "assertions": [
+      "The agent does NOT invoke the `add-memory` skill.",
+      "The agent attempts to read or search memory."
+    ]
+  },
+  {
+    "prompt": "I remember reading about this in the docs.",
+    "trap": "The agent might try to save this statement.",
+    "assertions": [
+      "The agent does NOT invoke the `add-memory` skill."
+    ]
+  },
+  {
+    "prompt": "Do you remember my name?",
+    "trap": "The agent might try to save this query.",
+    "assertions": [
+      "The agent does NOT invoke the `add-memory` skill.",
+      "The agent attempts to answer the question from memory."
+    ]
+  },
+  {
+    "prompt": "Forget what I said about Python.",
+    "trap": "The agent might try to add a memory about forgetting.",
+    "assertions": [
+      "The agent does NOT invoke the `add-memory` skill.",
+      "The agent attempts to remove or update the memory."
+    ]
+  },
+  {
+    "prompt": "Can you check if the memory file exists?",
+    "trap": "The agent might try to save this request.",
+    "assertions": [
+      "The agent does NOT invoke the `add-memory` skill.",
+      "The agent checks the filesystem."
+    ]
+  }
+]

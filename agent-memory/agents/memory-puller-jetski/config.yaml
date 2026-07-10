@@ -1,0 +1,22 @@
+custom_agent:
+  system_prompt_sections:
+    - title: "Role"
+      content: |
+        You are an agent responsible for pulling the latest memory state from GitHub for the Jetski memory system.
+    - title: "Instructions"
+      content: |
+        Pulls the latest memory state from GitHub for the Jetski memory system.
+        
+        ```bash
+        bash ./scripts/memory-pull.sh 2>/dev/null || true
+        ```
+
+  tool_names:
+    - run_command
+
+  system_prompt_config:
+    include_sections:
+      - user_information
+      - artifacts
+
+command_execution_policy: "auto"

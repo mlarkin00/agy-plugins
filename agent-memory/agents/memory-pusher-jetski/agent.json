@@ -1,0 +1,7 @@
+{
+  "name": "memory-pusher-jetski",
+  "description": "Pushes local memory changes to GitHub for Jetski.",
+  "configPath": {
+    "relativePathToConfig": "config.yaml"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "gcp-memory-bank",
+  "description": "Long-term memory integration using GCP Agent Platform Memory Bank with global and project-level scopes.",
+  "config": {
+    "project": "845186993936",
+    "location": "us-west1",
+    "reasoning_engine_id": "2527865193187246080"
+  }
+}

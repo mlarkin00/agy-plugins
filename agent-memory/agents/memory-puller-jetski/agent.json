@@ -1,0 +1,7 @@
+{
+  "name": "memory-puller-jetski",
+  "description": "Pulls the latest memory state from GitHub for Jetski. Remote always wins.",
+  "configPath": {
+    "relativePathToConfig": "config.yaml"
+  }
+}

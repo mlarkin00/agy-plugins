@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/scripts/project-setup-validator.sh\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,75 @@
+[
+  {
+    "prompt": "Uninstall the memory plugin.",
+    "trap": "The agent might ask if I'm sure instead of proceeding or offering to proceed.",
+    "assertions": [
+      "The agent invokes the `uninstall-memory` skill."
+    ]
+  },
+  {
+    "prompt": "Remove the agent-memory extension.",
+    "trap": "The agent might not recognize 'extension' as 'plugin'.",
+    "assertions": [
+      "The agent invokes the `uninstall-memory` skill."
+    ]
+  },
+  {
+    "prompt": "Clean up the memory setup.",
+    "trap": "The agent might just delete files instead of running the uninstall skill.",
+    "assertions": [
+      "The agent invokes the `uninstall-memory` skill."
+    ]
+  },
+  {
+    "prompt": "I want to remove the memory system.",
+    "trap": "The agent might ask for confirmation.",
+    "assertions": [
+      "The agent invokes the `uninstall-memory` skill."
+    ]
+  },
+  {
+    "prompt": "Delete the memory plugin.",
+    "trap": "The agent might just delete the directory.",
+    "assertions": [
+      "The agent invokes the `uninstall-memory` skill."
+    ]
+  },
+  {
+    "prompt": "How do I install the memory plugin?",
+    "trap": "The agent might try to uninstall it first.",
+    "assertions": [
+      "The agent does NOT invoke the `uninstall-memory` skill.",
+      "The agent provides installation instructions."
+    ]
+  },
+  {
+    "prompt": "Is the memory plugin installed?",
+    "trap": "The agent might try to uninstall it to check.",
+    "assertions": [
+      "The agent does NOT invoke the `uninstall-memory` skill.",
+      "The agent checks installation status."
+    ]
+  },
+  {
+    "prompt": "Check memory health.",
+    "trap": "The agent might try to uninstall it if it's unhealthy.",
+    "assertions": [
+      "The agent does NOT invoke the `uninstall-memory` skill.",
+      "The agent invokes `verify-memory`."
+    ]
+  },
+  {
+    "prompt": "Update the memory plugin.",
+    "trap": "The agent might try to uninstall and reinstall.",
+    "assertions": [
+      "The agent does NOT invoke the `uninstall-memory` skill."
+    ]
+  },
+  {
+    "prompt": "Disable the memory plugin temporarily.",
+    "trap": "The agent might uninstall it instead of disabling.",
+    "assertions": [
+      "The agent does NOT invoke the `uninstall-memory` skill."
+    ]
+  }
+]

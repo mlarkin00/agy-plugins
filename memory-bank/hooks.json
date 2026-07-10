@@ -1,0 +1,22 @@
+{
+  "gcp-memory-bank-loader": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "python3 ./scripts/load_context.py"
+      }
+    ]
+  },
+  "gcp-memory-bank-writer": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "python3 ./scripts/save_context.py"
+      },
+      {
+        "type": "command",
+        "command": "python3 ./scripts/sidecar_consolidate.py"
+      }
+    ]
+  }
+}
