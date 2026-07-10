@@ -1,38 +1,39 @@
 # active-skills
 
-Installs the full set of agent skills from the [`mlarkin00/agent-skills`](https://github.com/mlarkin00/agent-skills) repository (the `active-skills/` directory) as a single Claude Code plugin.
+Installs the full set of agent skills from the [`mlarkin00/agent-skills`](https://github.com/mlarkin00/agent-skills) repository (the `active-skills/` directory) as a single Antigravity plugin.
 
 The skills are **vendored** — a copy lives under [`skills/`](./skills) in this plugin — because a marketplace plugin must physically contain the skills it ships. That copy is kept current automatically (see [Auto-sync](#auto-sync) below), so you never edit `skills/` by hand.
 
 ## Install
 
-From the `mlarkin00-claude` marketplace:
+This plugin ships in the `mlarkin00/agy-plugins` marketplace. Since Antigravity does not install directly from a Git URL, clone the repo and install the plugin from its subdirectory:
 
-```
-/plugin marketplace add mlarkin00/claude
-/plugin install active-skills@mlarkin00-claude
+```bash
+git clone https://github.com/mlarkin00/agy-plugins.git
+jetski plugin install /path/to/agy-plugins/active-skills
 ```
 
-Once installed, every skill is available and namespaced under this plugin, e.g. `active-skills:systematic-debugging`.
+Once installed, all of the skills listed below are available in your agent sessions.
 
 ## Auto-sync
 
 The vendored skills track the source repo automatically. Two workflows cooperate:
 
-1. **`notify-plugin.yml`** (lives in `mlarkin00/agent-skills`) — on any push that touches `active-skills/**`, it sends a [`repository_dispatch`](https://docs.github.com/actions/reference/events-that-trigger-workflows#repository_dispatch) event (`event_type: active-skills-updated`) to this repo. This gives near-instant updates. A reference copy of this workflow is kept at [`sync/notify-plugin.yml`](./sync/notify-plugin.yml).
-2. **`sync-active-skills.yml`** (lives in `mlarkin00/claude`, this repo) — on that dispatch (and also on a **daily schedule** and via **manual run** as fallbacks), it clones the source repo, mirrors `active-skills/` into `active-skills/skills/` (adds, updates, **and deletes** to match exactly), regenerates this README's skill list, and — if anything changed — bumps the plugin version, updates `marketplace.json`, commits, tags, and cuts a GitHub release.
+1. **`notify-plugin.yml`** (lives in `mlarkin00/agent-skills`) — on any push that touches `active-skills/**`, it sends a [`repository_dispatch`](https://docs.github.com/actions/reference/events-that-trigger-workflows#repository_dispatch) event (`event_type: active-skills-updated`) to every marketplace that vendors these skills, including this one. This gives near-instant updates. A reference copy of this workflow is kept at [`sync/notify-plugin.yml`](./sync/notify-plugin.yml).
+2. **`sync-active-skills.yml`** (lives in this repo, `mlarkin00/agy-plugins`) — on that dispatch (and also on a **daily schedule** and via **manual run** as fallbacks), it clones the source repo, mirrors `active-skills/` into `active-skills/skills/` (adds, updates, **and deletes** to match exactly), regenerates this README's skill list, and — if anything changed — bumps the plugin version in `plugin.json`, commits, tags, and cuts a GitHub release.
 
 So adding, deleting, or editing a skill in the source repo results in a new plugin release with the vendored `skills/` in lockstep.
 
-### One-time setup for instant (event-driven) updates
+### One-time setup
 
-The scheduled poll and manual run need **no setup**. For the instant `repository_dispatch` path, add a token to the *source* repo so it can dispatch to this one:
+The `sync-active-skills.yml` workflow reads the (private) source repo, so **this** repo needs an Actions secret **`SKILLS_SRC_TOKEN`** — a PAT that can read `mlarkin00/agent-skills`. With that in place, the daily poll and manual run work on their own.
 
-1. Create a fine-grained or classic PAT with **`repo`** scope (or fine-grained `contents: read` + `metadata: read`, plus the ability to dispatch) on `mlarkin00/claude`.
-2. In `mlarkin00/agent-skills`, add it as an Actions secret named **`CLAUDE_REPO_TOKEN`**.
-3. Ensure `sync/notify-plugin.yml` is installed at `.github/workflows/notify-plugin.yml` in `mlarkin00/agent-skills`.
+For the instant `repository_dispatch` path, the **source** repo (`mlarkin00/agent-skills`) needs:
 
-If the token is missing or expires, the daily poll still keeps the plugin current.
+1. An Actions secret **`CLAUDE_REPO_TOKEN`** — a PAT with **`repo`** scope covering the marketplace repos it dispatches to (`mlarkin00/claude` and `mlarkin00/agy-plugins`). One classic `repo`-scoped PAT covers both.
+2. `sync/notify-plugin.yml` installed at `.github/workflows/notify-plugin.yml`.
+
+If that token is missing or expires, the daily poll still keeps the plugin current.
 
 ## Skills
 
