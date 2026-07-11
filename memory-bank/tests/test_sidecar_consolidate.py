@@ -85,21 +85,32 @@ class TestSidecarConsolidate(unittest.TestCase):
         
         events = sidecar_consolidate.aggregate_transcripts("/brain")
         self.assertEqual(len(events), 4) # skips corrupt line
-        self.assertEqual(events[0]["role"], "USER")
-        self.assertEqual(events[1]["role"], "AGENT")
-        self.assertEqual(events[2]["role"], "USER")
-        self.assertEqual(events[3]["role"], "AGENT")
+        self.assertEqual(events[0]["content"]["role"], "user")
+        self.assertEqual(events[1]["content"]["role"], "model")
+        self.assertEqual(events[2]["content"]["role"], "user")
+        self.assertEqual(events[3]["content"]["role"], "model")
 
+    @patch('sidecar_consolidate.get_plugin_config')
     @patch('sidecar_consolidate.should_run_sidecar')
     @patch('sidecar_consolidate.aggregate_transcripts')
     @patch('sidecar_consolidate.resolve_user_id')
     @patch('sidecar_consolidate.resolve_project_id')
     @patch('sidecar_consolidate.save_state_timestamp')
     @patch('urllib.request.urlopen')
-    def test_run_sends_api_request_and_updates_state(self, mock_urlopen, mock_save_state, mock_resolve_project, mock_resolve_user, mock_aggregate, mock_should_run):
+    def test_run_sends_api_request_and_updates_state(self, mock_urlopen, mock_save_state, mock_resolve_project, mock_resolve_user, mock_aggregate, mock_should_run, mock_get_config):
         import sidecar_consolidate
+        mock_get_config.return_value = {
+            "project": "my-project",
+            "location": "us-central1",
+            "reasoning_engine_id": "123"
+        }
         mock_should_run.return_value = True
-        mock_aggregate.return_value = [{"role": "USER", "content": "I want TailwindCSS."}]
+        mock_aggregate.return_value = [{
+            "content": {
+                "role": "user",
+                "parts": [{"text": "I want TailwindCSS."}]
+            }
+        }]
         mock_resolve_user.return_value = "user_hash_123"
         mock_resolve_project.return_value = "project_hash_456"
         
@@ -118,9 +129,9 @@ class TestSidecarConsolidate(unittest.TestCase):
         
         data = json.loads(req.data.decode('utf-8'))
         self.assertEqual(data["scope"]["user"], "user_hash_123")
-        self.assertEqual(data["scope"]["project"], "project_hash_456")
-        self.assertEqual(data["directContentsSource"]["events"][0]["role"], "USER")
-        self.assertEqual(data["directContentsSource"]["events"][0]["content"], "I want TailwindCSS.")
+        self.assertEqual(data["scope"]["project"], "global")
+        self.assertEqual(data["directContentsSource"]["events"][0]["content"]["role"], "user")
+        self.assertEqual(data["directContentsSource"]["events"][0]["content"]["parts"][0]["text"], "I want TailwindCSS.")
         
         self.assertTrue(mock_save_state.called)
 

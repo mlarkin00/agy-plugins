@@ -1,0 +1,10 @@
+{
+  "description": "Reviews and deduplicates existing memories in the GCP Memory Bank, and consolidates new ones.",
+  "builtin": "schedule",
+  "args": [
+    "0 */6 * * *",
+    "python3",
+    "../../scripts/sidecar_consolidate.py"
+  ],
+  "restart_policy": "on-failure"
+}

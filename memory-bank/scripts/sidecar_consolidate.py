@@ -60,9 +60,19 @@ def aggregate_transcripts(brain_dir):
                             source = step.get('source')
                             content = step.get('content')
                             if source == 'USER_EXPLICIT' and content:
-                                events.append({"role": "USER", "content": content})
+                                events.append({
+                                    "content": {
+                                        "role": "user",
+                                        "parts": [{"text": content}]
+                                    }
+                                })
                             elif source == 'MODEL' and content:
-                                events.append({"role": "AGENT", "content": content})
+                                events.append({
+                                    "content": {
+                                        "role": "model",
+                                        "parts": [{"text": content}]
+                                    }
+                                })
                 except Exception:
                     pass
     return events
@@ -223,6 +233,9 @@ def run():
 
     brain_dir = get_brain_dir_path()
     events = aggregate_transcripts(brain_dir)
+    # Limit to the most recent 500 events to stay within API payload size limits and prevent timeouts
+    if len(events) > 500:
+        events = events[-500:]
 
     user_hash = resolve_user_id()
     # Default to global scope for automatic memory consolidation
